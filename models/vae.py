@@ -21,8 +21,14 @@ class StateEncoder(nn.Module):
             nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2),
+            nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
+            nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
             nn.Flatten(),
-            nn.Linear(100, 100),
+            nn.Linear(952, 100),
             nn.ReLU(),
             nn.Linear(100, latent_dim)
             )
@@ -34,7 +40,7 @@ class StateEncoder(nn.Module):
         """
         latent_state = None
         input_shape = state.shape
-        state = state.reshape(-1, self.num_channels, 32, 32)
+        state = state.reshape(-1, self.num_channels, 185, 610)#32, 32)
         latent_state = self.encoder(state)
 
         # convert to original multi-batch shape
@@ -61,8 +67,14 @@ class StateVariationalEncoder(nn.Module):
             nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
             nn.ReLU(),
             nn.MaxPool2d(2, stride=2),
+            nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
+            nn.Conv2d(4, 4, kernel_size=5, stride=1, padding=0, dilation=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
             nn.Flatten(),
-            nn.Linear(100, 100),
+            nn.Linear(952, 100),
             nn.ReLU()
             )
         self.mean = nn.Linear(100, self.latent_dim)
@@ -78,7 +90,7 @@ class StateVariationalEncoder(nn.Module):
         mu = None
         log_var = None
         input_shape = state.shape
-        state = state.reshape(-1, self.num_channels, 32, 32)
+        state = state.reshape(-1, self.num_channels, 185, 610)# 32, 32)
         encode = self.encoder(state)
         mu = self.mean(encode)
         log_var = self.std(encode)
@@ -120,7 +132,7 @@ class StateDecoder(nn.Module):
             nn.ReLU(),
             nn.Linear(500, 500),
             nn.ReLU(),
-            nn.Linear(500, num_channels * 32 * 32)
+            nn.Linear(500, num_channels * 185 * 610)# * 32 * 32)
             )
 
     def forward(self, latent_state):
@@ -134,7 +146,7 @@ class StateDecoder(nn.Module):
 
         decoded_state = self.decoder(latent_state)
 
-        decoded_state = decoded_state.reshape(*input_shape[:-1], self.num_channels, 32, 32)
+        decoded_state = decoded_state.reshape(*input_shape[:-1], self.num_channels, 185, 610)#32, 32)
 
         return decoded_state
 
