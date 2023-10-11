@@ -52,7 +52,7 @@ class NormalizationTransform(object):
         return state
     
 
-def process_stereo_data(path_to_dataset, batch_size=1):
+def process_stereo_data(path_to_dataset, batch_size=4):
     """
     Process the collected data and returns a DataLoader for train and one for validation.
     The data provided is a list of trajectories (like collect_data_random output).
@@ -114,7 +114,7 @@ class StereoDataset(Dataset):
     def __init__(self, path_to_dataset):
         self.path = path_to_dataset
         self.length = 200
-        self.rs = torchvision.transforms.Resize((185, 610))
+        self.rs = torchvision.transforms.Resize((37, 122))#(185, 610)
 
     def __len__(self):
         return 200
